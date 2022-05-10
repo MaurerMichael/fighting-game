@@ -5,6 +5,8 @@ export class SoulPlayer {
     width = 50
     velocity = {x: 0, y: 0}
     keyMap = {}
+    health = 100
+    currentHealth = 100
 
     constructor(canvas, context, startPosition, keyBindings, color, rightCorner) {
         this.canvas = canvas
@@ -24,6 +26,11 @@ export class SoulPlayer {
             height: 40,
             width: 120
         }
+        this.healthbar = document.createElement("div")
+        this.healthview = document.createElement("div")
+        this.healthview.style.width = "100%"
+        this.healthbar.appendChild(this.healthview)
+
         console.log(this.keyMap, this.position)
     }
 
@@ -43,6 +50,7 @@ export class SoulPlayer {
         this.position.y += this.velocity.y
         this.attackBox.position.x = this.position.x - this.attackBox.offset.x
         this.attackBox.position.y = this.position.y - this.attackBox.offset.y
+        this.healthview.style.width = `${100 / this.health * this.currentHealth}%`
         this.gravityCheck()
         this.borderCheck()
     }

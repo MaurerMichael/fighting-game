@@ -1,3 +1,42 @@
 body {
     margin: 0;
+    position: relative;
+}
+
+
+#health-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+#health-bar >div:nth-child(1){
+    display: flex;
+    justify-content: flex-start;
+    border: 1px solid yellow;
+}
+
+#health-bar >div:nth-child(3){
+    display: flex;
+    justify-content: flex-end;
+    border: 1px solid yellow;
+}
+
+#health-bar > div {
+    width: 100%;
+    height: 20px;
+    margin: 0 20px;
+}
+
+#health-bar > div.timer {
+    width: 100px;
+    height: 100px;
+}
+
+#health-bar > div > div {
+    height: 100%;
+    background-color: red;
 }

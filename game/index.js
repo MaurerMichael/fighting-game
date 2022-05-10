@@ -11,6 +11,10 @@ export class Game{
         this.canvas.width = width
         this.canvas.height = height
         this.context = this.canvas.getContext("2d")
+        this.healthbar = document.createElement("div")
+        this.healthbar.id = "health-bar"
+        this.timer = document.createElement("div")
+        this.timer.className = "timer"
     }
 
     init() {
@@ -18,9 +22,16 @@ export class Game{
         this.activeBackground.fillBackground()
 
         this.playerOne = new SoulPlayer(this.canvas, this.context, this.canvas.width * 0.1, POKB, 'green', false)
+        this.healthbar.appendChild(this.playerOne.healthbar)
+
+        this.healthbar.appendChild(this.timer)
+
         this.playerTwo = new SoulPlayer(this.canvas, this.context, this.canvas.width * 0.9, PTKB, 'blue', true)
+        this.healthbar.appendChild(this.playerTwo.healthbar)
 
         document.body.appendChild(this.canvas)
+        document.body.appendChild(this.healthbar)
+
 
         window.addEventListener("keypress", (event) => {
             event.preventDefault()
@@ -41,14 +52,15 @@ export class Game{
         this.playerOne.update()
         this.playerTwo.update()
         if(this.playerOne.isAttacking && collision(this.playerOne.attackBox, this.playerTwo)){
-            this.playerOne.isAttacking = false
             console.log("Player One hit")
+            this.playerOne.isAttacking = false
+            this.playerTwo.currentHealth -= 10
         }
         if(this.playerTwo.isAttacking && collision(this.playerTwo.attackBox, this.playerOne)) {
-            this.playerTwo.isAttacking = false
             console.log("Player Two hit")
+            this.playerTwo.isAttacking = false
+            this.playerOne.currentHealth -= 10
         }
     }
-
 }
 
