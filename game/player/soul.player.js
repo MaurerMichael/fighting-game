@@ -6,25 +6,45 @@ export class SoulPlayer {
     velocity = {x: 0, y: 0}
     keyMap = {}
 
-    constructor(canvas, context, startPosition, keyBindings) {
+    constructor(canvas, context, startPosition, keyBindings, color, rightCorner) {
         this.canvas = canvas
         this.ctx = context
-        this.position = {x: startPosition, y: this.canvas.height - this.height}
+        this.position = {x: rightCorner ? startPosition - this.width : startPosition, y: this.canvas.height - this.height}
+        this.color = color
         keyBindings.forEach(binding => this.keyBinding(binding))
+        this.attackBox = {
+            position: {
+                x: this.position.x,
+                y: this.position.y
+            },
+            offset: {
+                x: rightCorner ? 120 - this.width : 0,
+                y: 0
+            },
+            height: 40,
+            width: 120
+        }
         console.log(this.keyMap, this.position)
     }
 
     draw() {
-        this.ctx.fillStyle = 'red'
+        this.ctx.fillStyle = this.color
         this.ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
+
+        if(this.isAttacking){
+            this.ctx.fillStyle = 'red'
+            this.ctx.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height)
+        }
     }
 
     update() {
         this.draw()
-        this.gravityCheck()
-        this.borderCheck()
         this.position.x += this.velocity.x
         this.position.y += this.velocity.y
+        this.attackBox.position.x = this.position.x - this.attackBox.offset.x
+        this.attackBox.position.y = this.position.y - this.attackBox.offset.y
+        this.gravityCheck()
+        this.borderCheck()
     }
 
     gravityCheck() {
@@ -67,6 +87,14 @@ export class SoulPlayer {
                     }
                 })
                 break
+            case "attack":
+                Object.assign(this.keyMap, {
+                    [binding.key]: {
+                        keyPress: () => this.attack(),
+                        keyActive: false
+                    }
+                })
+                break
             default:
                 return
         }
@@ -90,13 +118,22 @@ export class SoulPlayer {
 
     moveLeft() {
         this.velocity.x -= 1
+        this.attackBox.offset.x = this.attackBox.width - this.width
     }
 
     moveRight() {
         this.velocity.x += 1
+        this.attackBox.offset.x = 0
     }
 
     jump() {
-        this.velocity.y -= 20
+        if(this.velocity.y === 0){
+            this.velocity.y -= 20
+        }
+    }
+
+    attack() {
+        this.isAttacking = true
+        setTimeout(()=> this.isAttacking = false, 100)
     }
 }

@@ -6,7 +6,7 @@ export class SimpleBackground {
     }
 
     fillBackground() {
-        this.ctx.fillStyle = 'blue'
+        this.ctx.fillStyle = 'black'
         this.ctx.fillRect(0,0, this.canvas.width,this.canvas.height)
     }
 }

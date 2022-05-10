@@ -1,6 +1,7 @@
 import {SimpleBackground} from "./background/simple.background.js";
 import {SoulPlayer} from "./player/soul.player.js";
 import {POKB, PTKB} from "./default.conf.js";
+import {collision} from "./physics/collision.js";
 
 
 export class Game{
@@ -16,8 +17,8 @@ export class Game{
         this.activeBackground = new SimpleBackground(this.canvas, this.context)
         this.activeBackground.fillBackground()
 
-        this.playerOne = new SoulPlayer(this.canvas, this.context, 10, POKB)
-        this.playerTwo = new SoulPlayer(this.canvas, this.context, 600, PTKB)
+        this.playerOne = new SoulPlayer(this.canvas, this.context, this.canvas.width * 0.1, POKB, 'green', false)
+        this.playerTwo = new SoulPlayer(this.canvas, this.context, this.canvas.width * 0.9, PTKB, 'blue', true)
 
         document.body.appendChild(this.canvas)
 
@@ -39,6 +40,14 @@ export class Game{
         this.activeBackground.fillBackground()
         this.playerOne.update()
         this.playerTwo.update()
+        if(this.playerOne.isAttacking && collision(this.playerOne.attackBox, this.playerTwo)){
+            this.playerOne.isAttacking = false
+            console.log("Player One hit")
+        }
+        if(this.playerTwo.isAttacking && collision(this.playerTwo.attackBox, this.playerOne)) {
+            this.playerTwo.isAttacking = false
+            console.log("Player Two hit")
+        }
     }
 
 }

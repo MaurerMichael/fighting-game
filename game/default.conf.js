@@ -9,21 +9,30 @@ export const POKB = [
     },
     {
         action: "jump",
-        key: "c"
+        key: "w"
+    },
+    {
+        action: "attack",
+        key: "f"
     }
 ]
 
 export const PTKB = [
     {
         action: "moveLeft",
-        key: "j"
+        key: "k"
     },
     {
         action: "moveRight",
-        key: "l"
+        key: "ö"
     },
     {
         action: "jump",
-        key: "n"
+        key: "p"
+    },
+    {
+        action: "attack",
+        key: "j"
+
     }
 ]
