@@ -13,7 +13,7 @@ export class SoulPlayer {
         this.ctx = context
         this.position = {x: rightCorner ? startPosition - this.width : startPosition, y: this.canvas.height - this.height}
         this.color = color
-        keyBindings.forEach(binding => this.keyBinding(binding))
+        Object.keys(keyBindings).forEach((action) => this.keyBinding(action, keyBindings[action]))
         this.attackBox = {
             position: {
                 x: this.position.x,
@@ -67,11 +67,11 @@ export class SoulPlayer {
         }
     }
 
-    keyBinding(binding) {
-        switch (binding.action) {
+    keyBinding(action, key) {
+        switch (action) {
             case "moveLeft":
                 Object.assign(this.keyMap, {
-                    [binding.key]: {
+                    [key]: {
                         keyPress: () => this.moveLeft(),
                         keyUp: () => this.velocity.x = 0,
                         keyActive: false
@@ -80,7 +80,7 @@ export class SoulPlayer {
                 break
             case "moveRight":
                 Object.assign(this.keyMap, {
-                    [binding.key]: {
+                    [key]: {
                         keyPress: () => this.moveRight(),
                         keyUp: () => this.velocity.x = 0,
                         keyActive: false
@@ -89,7 +89,7 @@ export class SoulPlayer {
                 break
             case "jump":
                 Object.assign(this.keyMap, {
-                    [binding.key]: {
+                    [key]: {
                         keyPress: () => this.jump(),
                         keyActive: false
                     }
@@ -97,7 +97,7 @@ export class SoulPlayer {
                 break
             case "attack":
                 Object.assign(this.keyMap, {
-                    [binding.key]: {
+                    [key]: {
                         keyPress: () => this.attack(),
                         keyActive: false
                     }
