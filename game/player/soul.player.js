@@ -8,10 +8,11 @@ export class SoulPlayer {
     health = 100
     currentHealth = 100
 
-    constructor(canvas, context, startPosition, keyBindings, color, rightCorner) {
+    constructor(canvas, context, startPosition, keyBindings, color, rightCorner, ground = 0) {
         this.canvas = canvas
         this.ctx = context
-        this.position = {x: rightCorner ? startPosition - this.width : startPosition, y: this.canvas.height - this.height}
+        this.ground = ground
+        this.position = {x: rightCorner ? startPosition - this.width : startPosition, y: this.canvas.height - (this.height + this.ground )}
         this.color = color
         Object.keys(keyBindings).forEach((action) => this.keyBinding(action, keyBindings[action]))
         this.attackBox = {
@@ -56,7 +57,7 @@ export class SoulPlayer {
     }
 
     gravityCheck() {
-        if ((this.position.y + this.height + this.velocity.y) >= this.canvas.height) {
+        if ((this.position.y + this.height + this.velocity.y + this.ground) >= this.canvas.height) {
             this.velocity.y = 0
         } else this.velocity.y += this.gravity
     }

@@ -4,6 +4,7 @@ import {GID, POKB, PTKB} from "./default.conf.js";
 import {collision} from "./physics/collision.js";
 import {StartScreen} from "./screens/start.screen.js";
 import {EndScreen} from "./screens/end.screen.js";
+import {WoodBackground} from "./background/wood/wood.background.js";
 
 
 export class Game {
@@ -20,6 +21,10 @@ export class Game {
         this.context = this.canvas.getContext("2d")
         this.gameContainer = document.createElement("div")
         this.gameContainer.id = GID
+        this.gameContainer.style.width = `${width}px`
+        this.gameContainer.style.height = `${height}px`
+        this.gameContainer.style.position = "relative"
+
         document.body.appendChild(this.gameContainer)
     }
 
@@ -36,25 +41,9 @@ export class Game {
         this.screen = new StartScreen(this)
         this.screen.show()
 
-    }
-
-    start() {
-        this.healthbar.innerHTML = ""
-        this.playerOne = new SoulPlayer(this.canvas, this.context, this.canvas.width * 0.1, this.poKeyBindings, 'green', false)
-        this.healthbar.appendChild(this.playerOne.healthbar)
-
-        this.healthbar.appendChild(this.timer)
-
-        this.playerTwo = new SoulPlayer(this.canvas, this.context, this.canvas.width * 0.9, this.ptKeyBindings, 'blue', true)
-        this.healthbar.appendChild(this.playerTwo.healthbar)
-
-
-        this.gameContainer.appendChild(this.healthbar)
-
-
         window.addEventListener("keypress", (event) => {
             event.preventDefault()
-            if (this.time > 0) {
+            if (this.activeGame && this.time > 0 && !!this.playerOne && !!this.playerTwo) {
                 this.playerOne.keyPress(event.key)
                 this.playerTwo.keyPress(event.key)
             }
@@ -62,11 +51,26 @@ export class Game {
 
         window.addEventListener("keyup", (event) => {
             event.preventDefault()
-            if (this.time > 0) {
+            if (this.activeGame &&this.time > 0 && !!this.playerOne && !!this.playerTwo) {
                 this.playerOne.keyUp(event.key)
                 this.playerTwo.keyUp(event.key)
             }
         })
+    }
+
+    start() {
+        this.activeGame = true
+        this.activeBackground = new WoodBackground(this.canvas, this.context)
+        this.healthbar.innerHTML = ""
+        this.playerOne = new SoulPlayer(this.canvas, this.context, this.canvas.width * 0.1, this.poKeyBindings, 'green', false, this.activeBackground.groundLevel)
+        this.healthbar.appendChild(this.playerOne.healthbar)
+
+        this.healthbar.appendChild(this.timer)
+
+        this.playerTwo = new SoulPlayer(this.canvas, this.context, this.canvas.width * 0.9, this.ptKeyBindings, 'blue', true, this.activeBackground.groundLevel)
+        this.healthbar.appendChild(this.playerTwo.healthbar)
+
+        this.gameContainer.appendChild(this.healthbar)
 
         this.interval = setInterval(() => {
             if (this.time > 0) --this.time
@@ -81,10 +85,10 @@ export class Game {
     }
 
     animate() {
-        this.animationFrame = window.requestAnimationFrame(() => this.animate())
-        this.activeBackground.fillBackground()
+        window.requestAnimationFrame(() => this.animate())
+        this.activeBackground.update()
 
-        if (this.playerOne && this.playerTwo) {
+        if (!!this.playerOne && !!this.playerTwo) {
             this.playerOne.update()
             this.playerTwo.update()
 
@@ -98,7 +102,7 @@ export class Game {
                 this.playerOne.currentHealth -= 10
             }
 
-            if ((this.playerOne.currentHealth <= 0 || this.playerTwo.currentHealth <= 0) && this.interval) {
+            if (this.activeGame && (this.playerOne.currentHealth <= 0 || this.playerTwo.currentHealth <= 0) && this.interval) {
                 this.endGame()
             }
         }
@@ -111,6 +115,7 @@ export class Game {
     }
 
     endGame() {
+        this.activeGame = false
         this.playerOne.update()
         this.playerTwo.update()
         clearInterval(this.interval)
@@ -122,7 +127,6 @@ export class Game {
         }else if(this.playerOne.currentHealth> this.playerTwo.currentHealth){
             message = "Player One win"
         }
-        window.cancelAnimationFrame(this.animationFrame)
         this.screen = new EndScreen(this, message)
         this.screen.show()
     }
