@@ -6,14 +6,16 @@ export class SoulPlayer {
     velocity = {x: 0, y: 0}
     keyMap = {}
     health = 100
-    currentHealth = 100
 
-    constructor(canvas, context, startPosition, keyBindings, color, rightCorner, ground = 0) {
+    constructor(canvas, context, startPosition, keyBindings,  rightCorner, ground = 0) {
+        this.rightCorner = rightCorner
+        this.startPosition = startPosition
+        this.currentHealth = this.health
         this.canvas = canvas
         this.ctx = context
         this.ground = ground
         this.position = {x: rightCorner ? startPosition - this.width : startPosition, y: this.canvas.height - (this.height + this.ground )}
-        this.color = color
+
         Object.keys(keyBindings).forEach((action) => this.keyBinding(action, keyBindings[action]))
         this.attackBox = {
             position: {
@@ -31,13 +33,9 @@ export class SoulPlayer {
         this.healthview = document.createElement("div")
         this.healthview.style.width = "100%"
         this.healthbar.appendChild(this.healthview)
-
-        console.log(this.keyMap, this.position)
     }
 
     draw() {
-        this.ctx.fillStyle = this.color
-        this.ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
 
         if(this.isAttacking){
             this.ctx.fillStyle = 'red'
@@ -59,7 +57,9 @@ export class SoulPlayer {
     gravityCheck() {
         if ((this.position.y + this.height + this.velocity.y + this.ground) >= this.canvas.height) {
             this.velocity.y = 0
-        } else this.velocity.y += this.gravity
+        } else {
+            this.velocity.y += this.gravity
+        }
     }
 
     borderCheck() {
@@ -96,10 +96,26 @@ export class SoulPlayer {
                     }
                 })
                 break
-            case "attack":
+            case "attackOne":
                 Object.assign(this.keyMap, {
                     [key]: {
-                        keyPress: () => this.attack(),
+                        keyPress: () => this.attackOne(),
+                        keyActive: false
+                    }
+                })
+                break
+            case "attackTwo":
+                Object.assign(this.keyMap, {
+                    [key]: {
+                        keyPress: () => this.attackTwo(),
+                        keyActive: false
+                    }
+                })
+                break
+            case "attackThree":
+                Object.assign(this.keyMap, {
+                    [key]: {
+                        keyPress: () => this.attackThree(),
                         keyActive: false
                     }
                 })
@@ -141,8 +157,20 @@ export class SoulPlayer {
         }
     }
 
-    attack() {
+    attacking(time) {
         this.isAttacking = true
-        setTimeout(()=> this.isAttacking = false, 100)
+        setTimeout(()=> this.isAttacking = false, time)
+    }
+
+    attackOne() {
+        this.attacking(100)
+    }
+
+    attackTwo() {
+        this.attacking(100)
+    }
+
+    attackThree() {
+        this.attacking(100)
     }
 }

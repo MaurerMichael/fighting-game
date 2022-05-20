@@ -25,7 +25,17 @@ export class WoodBackground extends SimpleBackground{
 
         const frameX = this.shop.width / 6
         const activeFrameX = frameX * this.shopFrame
-        this.ctx.drawImage(this.shop, activeFrameX, 0, frameX, this.shop.height , 642, 224, frameX*2, this.shop.height*2)
+        this.ctx.drawImage(
+            this.shop,
+            activeFrameX,
+            0,
+            frameX,
+            this.shop.height ,
+            642,
+            224,
+            frameX*2,
+            this.shop.height*2
+        )
 
         if(this.nextFrame){
             this.nextFrame = false

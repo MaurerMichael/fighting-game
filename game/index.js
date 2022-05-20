@@ -5,6 +5,7 @@ import {collision} from "./physics/collision.js";
 import {StartScreen} from "./screens/start.screen.js";
 import {EndScreen} from "./screens/end.screen.js";
 import {WoodBackground} from "./background/wood/wood.background.js";
+import {KnightPlayer} from "./player/Medieval Warrior Pack 3/knight.player.js";
 
 
 export class Game {
@@ -41,7 +42,7 @@ export class Game {
         this.screen = new StartScreen(this)
         this.screen.show()
 
-        window.addEventListener("keypress", (event) => {
+        window.addEventListener("keydown", (event) => {
             event.preventDefault()
             if (this.activeGame && this.time > 0 && !!this.playerOne && !!this.playerTwo) {
                 this.playerOne.keyPress(event.key)
@@ -62,12 +63,12 @@ export class Game {
         this.activeGame = true
         this.activeBackground = new WoodBackground(this.canvas, this.context)
         this.healthbar.innerHTML = ""
-        this.playerOne = new SoulPlayer(this.canvas, this.context, this.canvas.width * 0.1, this.poKeyBindings, 'green', false, this.activeBackground.groundLevel)
+        this.playerOne = new KnightPlayer(this.canvas, this.context, this.canvas.width * 0.1, this.poKeyBindings, 'green', false, this.activeBackground.groundLevel)
         this.healthbar.appendChild(this.playerOne.healthbar)
 
         this.healthbar.appendChild(this.timer)
 
-        this.playerTwo = new SoulPlayer(this.canvas, this.context, this.canvas.width * 0.9, this.ptKeyBindings, 'blue', true, this.activeBackground.groundLevel)
+        this.playerTwo = new KnightPlayer(this.canvas, this.context, this.canvas.width * 0.9, this.ptKeyBindings, 'blue', true, this.activeBackground.groundLevel)
         this.healthbar.appendChild(this.playerTwo.healthbar)
 
         this.gameContainer.appendChild(this.healthbar)
